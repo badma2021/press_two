@@ -17,6 +17,11 @@ services:
     container_name: eurekaserver-ms
     ports:
       - "8070:8070"
+    healthcheck:
+      test: timeout 10s bash -c ':> /dev/tcp/127.0.0.1/8070' || exit 1
+      interval: 10s
+      timeout: 5s
+      retries: 1
     environment:
       SPRING_APPLICATION_NAME: "eurekaserver"
       SPRING_CONFIG_IMPORT: configserver:http://configserver:8071/
@@ -36,6 +41,27 @@ services:
     depends_on:
       - eurekaserver
 
+  input:
+    image: "presstwo/input:s1"
+    container_name: input-ms
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_APPLICATION_NAME: "input"
+      SPRING_CONFIG_IMPORT: configserver:http://configserver:8071/
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eurekaserver:8070/eureka/
+    depends_on:
+
+      eurekaserver:
+        condition: service_healthy
+
+
+  mongodb:
+    image: mongo:latest
+    restart: always
+    container_name: "mongodb"
+    ports:
+      - 27070:27017
 networks:
   presstwo:
     driver: "bridge"

@@ -5,14 +5,12 @@ spring:
     name: "input"
   profiles:
     active: "prod"
-  datasource:
-    url:
-    driverClassName:
-    username:
-    password:
-  jpa:
-    database-platform:
-    show-sql: true
+  data:
+    mongodb:
+      host: mongodb
+      port: 27017
+      database: input
+
   config:
     import: "optional:configserver:http://localhost:8071/"
   cloud:
@@ -52,7 +50,7 @@ eureka:
 
 info:
   app:
-    name: "accounts"
+    name: "input"
     description: "PressTwo Input Application"
     version: "1.0.0"
 
