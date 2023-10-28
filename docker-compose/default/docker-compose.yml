@@ -1,0 +1,41 @@
+services:
+  configserver:
+    image: "presstwo/configserver:s1"
+    container_name: configserver-ms
+    ports:
+      - "8071:8071"
+    healthcheck:
+      test: timeout 10s bash -c ':> /dev/tcp/127.0.0.1/8071' || exit 1
+      interval: 10s
+      timeout: 5s
+      retries: 1
+
+
+
+  eurekaserver:
+    image: "presstwo/eurekaserver:s1"
+    container_name: eurekaserver-ms
+    ports:
+      - "8070:8070"
+    environment:
+      SPRING_APPLICATION_NAME: "eurekaserver"
+      SPRING_CONFIG_IMPORT: configserver:http://configserver:8071/
+    depends_on:
+      configserver:
+        condition: service_healthy
+
+  gatewayserver:
+    image: "presstwo/gatewayserver:s1"
+    container_name: gatewayserver-ms
+    ports:
+      - "8072:8072"
+    environment:
+      SPRING_APPLICATION_NAME: "gatewayserver"
+      SPRING_CONFIG_IMPORT: configserver:http://configserver:8071/
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eurekaserver:8070/eureka/
+    depends_on:
+      - eurekaserver
+
+networks:
+  presstwo:
+    driver: "bridge"

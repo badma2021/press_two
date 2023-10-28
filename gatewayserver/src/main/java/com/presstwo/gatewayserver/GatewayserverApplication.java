@@ -13,13 +13,13 @@ public class GatewayserverApplication {
 		SpringApplication.run(GatewayserverApplication.class, args);
 	}
 
-	@Bean
+	//@Bean
 	public RouteLocator pressTwoRouteConfig(RouteLocatorBuilder routeLocatorBuilder){
 		return routeLocatorBuilder.routes()
 				.route(p->p
-						.path("/presstwo//**")
+						.path("/presstwo/input/**")
 						.filters(f->f
-								.rewritePath("/presstwo//(?<segment>.*)","/${segment}"))
+								.rewritePath("/presstwo/input/(?<segment>.*)","/${segment}"))
 						.uri("lb:"))
 				.build();
 	}

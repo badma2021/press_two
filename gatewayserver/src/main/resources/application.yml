@@ -10,18 +10,6 @@ spring:
           enabled: false
           lowerCaseServiceId: true
 
-management:
-  endpoints:
-    web:
-      exposure:
-        include: "*"
-  endpoint:
-    gateway:
-      enabled: true
-  info:
-    env:
-      enabled: true
-
 info:
   app:
     name: "gatewayserver"
