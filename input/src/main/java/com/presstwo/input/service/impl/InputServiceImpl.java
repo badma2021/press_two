@@ -5,7 +5,10 @@ import com.presstwo.input.entity.Input;
 import com.presstwo.input.repository.InputDao;
 import com.presstwo.input.service.InputService;
 import org.modelmapper.ModelMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.stream.function.StreamBridge;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -24,12 +27,18 @@ import static java.util.Objects.isNull;
  */
 @Service
 public class InputServiceImpl implements InputService {
-
+    private static final Logger log = LoggerFactory.getLogger(InputServiceImpl.class);
     @Autowired
     InputDao inputDao;
 
     @Autowired
     ModelMapper modelMapper;
+
+    private final StreamBridge streamBridge;
+
+    public InputServiceImpl(StreamBridge streamBridge) {
+        this.streamBridge = streamBridge;
+    }
 
     @Override
     public void createInput(InputDto inputDto) {
@@ -45,6 +54,7 @@ public class InputServiceImpl implements InputService {
         }
 
         inputDao.save(input);
+        sendCommunication(input);
 
         modelMapper.map(input, inputDto);
     }
@@ -102,5 +112,13 @@ public class InputServiceImpl implements InputService {
         }
 
         throw new NoSuchElementException("No input with id " + inputDto.getId() + " was found");
+    }
+
+
+    private void sendCommunication(Input input) {
+
+        log.info("Sending Communication request for the details: {}", input);
+        var result = streamBridge.send("sendCommunication-out-0", input);
+        log.info("Is the Communication request successfully triggered ? : {}", result);
     }
 }

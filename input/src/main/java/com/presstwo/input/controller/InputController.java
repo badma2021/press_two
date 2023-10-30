@@ -25,7 +25,7 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
  * This file was created by aantonica on 20/05/2020
  */
 @RestController
-@RequestMapping("/input")
+@RequestMapping("/api")
 public class InputController {
 
     @Autowired

@@ -1,4 +1,17 @@
 services:
+  rabbit:
+    image: rabbitmq:3.12-management
+    hostname: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    healthcheck:
+      test: rabbitmq-diagnostics check_port_connectivity
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 5s
+
   configserver:
     image: "presstwo/configserver:s1"
     container_name: configserver-ms
@@ -39,22 +52,35 @@ services:
       SPRING_CONFIG_IMPORT: configserver:http://configserver:8071/
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eurekaserver:8070/eureka/
     depends_on:
-      - eurekaserver
+      eurekaserver:
+        condition: service_healthy
+      input:
+        condition: service_healthy
+      stata:
+        condition: service_healthy
 
   input:
     image: "presstwo/input:s1"
     container_name: input-ms
     ports:
       - "8080:8080"
+    healthcheck:
+      test: timeout 10s bash -c ':> /dev/tcp/127.0.0.1/8080' || exit 1
+      interval: 10s
+      timeout: 5s
+      retries: 1
     environment:
       SPRING_APPLICATION_NAME: "input"
       SPRING_CONFIG_IMPORT: configserver:http://configserver:8071/
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eurekaserver:8070/eureka/
+      SPRING_RABBITMQ_HOST: "rabbit"
     depends_on:
-
       eurekaserver:
         condition: service_healthy
-
+      rabbit:
+        condition: service_healthy
+#      mongodb:
+#        condition: service_healthy
 
   mongodb:
     image: mongo:latest
@@ -62,6 +88,49 @@ services:
     container_name: "mongodb"
     ports:
       - 27070:27017
+#    healthcheck:
+#      test: echo 'db.runCommand("ping").ok' | mongo mongo:27017/test --quiet
+#      interval: 10s
+#      timeout: 10s
+#      retries: 5
+#      start_period: 40s
+
+  stata:
+    image: "presstwo/stata:s1"
+    container_name: stata-ms
+    ports:
+      - "8081:8081"
+    healthcheck:
+      test: timeout 10s bash -c ':> /dev/tcp/127.0.0.1/8081' || exit 1
+      interval: 10s
+      timeout: 5s
+      retries: 1
+    environment:
+      SPRING_APPLICATION_NAME: "stata"
+      SPRING_CONFIG_IMPORT: configserver:http://configserver:8071/
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eurekaserver:8070/eureka/
+      SPRING_RABBITMQ_HOST: "rabbit"
+    depends_on:
+      eurekaserver:
+        condition: service_healthy
+      rabbit:
+        condition: service_healthy
+#      mongodb_stata:
+#        condition: service_healthy
+
+  mongodb_stata:
+    image: "bitnami/mongodb:latest"
+    restart: always
+    container_name: "mongodb_stata"
+    ports:
+      - 27071:27017
+#    healthcheck:
+#      test: echo 'db.runCommand("ping").ok' | mongo mongo:27017/test --quiet
+#      interval: 10s
+#      timeout: 10s
+#      retries: 5
+#      start_period: 40s
+
 networks:
   presstwo:
     driver: "bridge"
