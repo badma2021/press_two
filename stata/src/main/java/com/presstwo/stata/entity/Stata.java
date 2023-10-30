@@ -15,10 +15,10 @@ import java.util.UUID;
 import static java.util.Objects.isNull;
 
 @Data
-@Document(collection = "inputs_stata")
-public class Input implements Serializable, Persistable<String> {
+@Document(collection = "stata")
+public class Stata implements Serializable, Persistable<String> {
 
-    public Input() {
+    public Stata() {
         this.id = UUID.randomUUID().toString();
     }
 
@@ -32,7 +32,8 @@ public class Input implements Serializable, Persistable<String> {
     @Indexed(unique = true)
     private String title;
     private Boolean available;
-    private String category;
+    private String result;
+    private int hitRate;
 
     @CreatedDate
     private Date createdAt;

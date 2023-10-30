@@ -15,7 +15,7 @@ import java.util.UUID;
 import static java.util.Objects.isNull;
 
 @Data
-@Document(collection = "docs")
+@Document(collection = "inputs")
 public class Input implements Serializable, Persistable<String> {
 
     public Input() {
@@ -32,6 +32,7 @@ public class Input implements Serializable, Persistable<String> {
     @Indexed(unique = true)
     private String title;
     private Boolean available;
+    private String category;
 
     @CreatedDate
     private Date createdAt;

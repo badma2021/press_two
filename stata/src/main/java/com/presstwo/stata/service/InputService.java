@@ -1,6 +1,6 @@
-package com.presstwo.input.service;
+package com.presstwo.stata.service;
 
-import com.presstwo.input.dto.InputDto;
+import com.presstwo.stata.dto.InputDto;
 
 import java.util.List;
 

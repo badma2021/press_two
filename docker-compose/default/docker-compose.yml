@@ -83,7 +83,7 @@ services:
 #        condition: service_healthy
 
   mongodb:
-    image: mongo:latest
+    image: "bitnami/mongodb:latest"
     restart: always
     container_name: "mongodb"
     ports:

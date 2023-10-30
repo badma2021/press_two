@@ -1,9 +1,9 @@
-package com.presstwo.input.service.impl;
+package com.presstwo.stata.service.impl;
 
-import com.presstwo.input.dto.InputDto;
-import com.presstwo.input.entity.Input;
-import com.presstwo.input.repository.InputDao;
-import com.presstwo.input.service.InputService;
+import com.presstwo.stata.dto.InputDto;
+import com.presstwo.stata.entity.Input;
+import com.presstwo.stata.repository.InputDao;
+import com.presstwo.stata.service.InputService;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,7 +55,6 @@ public class InputServiceImpl implements InputService {
         }
 
         inputDao.save(input);
-        sendCommunication(input);
 
         modelMapper.map(input, inputDto);
     }
@@ -86,8 +85,7 @@ public class InputServiceImpl implements InputService {
     @Override
     public List<InputDto> fetchTopRecentInputs() {
 
-        final Page<Input> recentInputs = inputDao.findByAvailable(true, PageRequest.of(0, 10,
-                Sort.by(Sort.Direction.DESC, "updatedAt")));
+        final Page<Input> recentInputs = inputDao.findByAvailable(true, PageRequest.of(0, 10, Sort.by(Sort.Direction.DESC, "updatedAt")));
 
         return recentInputs.stream()
                 .map(input -> modelMapper.map(input, InputDto.class))
@@ -117,11 +115,4 @@ public class InputServiceImpl implements InputService {
         throw new NoSuchElementException("No input with id " + inputDto.getId() + " was found");
     }
 
-
-    private void sendCommunication(Input input) {
-
-        log.info("Sending Communication request for the details: {}", input);
-        var result = streamBridge.send("sendCommunication-out-0", input);
-        log.info("Is the Communication request successfully triggered ? : {}", result);
-    }
 }

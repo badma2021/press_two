@@ -1,4 +1,4 @@
-package com.presstwo.input.dto;
+package com.presstwo.stata.dto;
 
 import lombok.Data;
 
@@ -14,8 +14,8 @@ public class InputDto {
     private String content;
     private String userId;
     private String title;
-    private String category;
     private Boolean available;
+    private String category;
     private Date createdAt;
     private Date updatedAt;
 
