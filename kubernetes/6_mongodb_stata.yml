@@ -1,0 +1,41 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: mongodb-stata
+  name: mongodb-stata
+spec:
+  ports:
+    - port: 27070
+      targetPort: 27017
+  selector:
+    app: mongodb-stata
+  clusterIP: None
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mongodb-stata
+  labels:
+    app: mongodb-stata
+spec:
+  selector:
+    matchLabels:
+      app: mongodb-stata
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: mongodb-stata
+      name: mongodb-stata
+
+
+    spec:
+      containers:
+        - image: bitnami/mongodb:latest
+          name: mongodb-stata
+
+          ports:
+            - containerPort: 27017
+              name: mongodb-stata

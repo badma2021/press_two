@@ -118,10 +118,10 @@ services:
 #      mongodb_stata:
 #        condition: service_healthy
 
-  mongodb_stata:
+  mongodb-stata:
     image: "bitnami/mongodb:latest"
     restart: always
-    container_name: "mongodb_stata"
+    container_name: "mongodb-stata"
     ports:
       - 27071:27017
 #    healthcheck:

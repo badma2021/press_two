@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: stata-deployment
+  labels:
+    app: stata
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: stata
+  template:
+    metadata:
+      labels:
+        app: stata
+    spec:
+      containers:
+        - name: stata
+          image: presstwo/stata:s1
+          ports:
+            - containerPort: 8081
+          env:
+            - name: SPRING_APPLICATION_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: presstwo-configmap
+                  key: STATA_APPLICATION_NAME
+            - name: SPRING_PROFILES_ACTIVE
+              valueFrom:
+                configMapKeyRef:
+                  name: presstwo-configmap
+                  key: SPRING_PROFILES_ACTIVE
+            - name: SPRING_CONFIG_IMPORT
+              valueFrom:
+                configMapKeyRef:
+                  name: presstwo-configmap
+                  key: SPRING_CONFIG_IMPORT
+            - name: EUREKA_CLIENT_SERVICEURL_DEFAULTZONE
+              valueFrom:
+                configMapKeyRef:
+                  name: presstwo-configmap
+                  key: EUREKA_CLIENT_SERVICEURL_DEFAULTZONE
+            - name: SPRING_RABBITMQ_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: presstwo-configmap
+                  key: SPRING_RABBITMQ_HOST
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: stata
+spec:
+  selector:
+    app: stata
+  type: LoadBalancer
+  ports:
+    - protocol: TCP
+      port: 8081
+      targetPort: 8081
