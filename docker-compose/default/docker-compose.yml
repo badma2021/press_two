@@ -1,5 +1,5 @@
 services:
-  rabbit:
+  rabbitmq:
     image: rabbitmq:3.12-management
     hostname: rabbitmq
     ports:
@@ -73,11 +73,11 @@ services:
       SPRING_APPLICATION_NAME: "input"
       SPRING_CONFIG_IMPORT: configserver:http://configserver:8071/
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eurekaserver:8070/eureka/
-      SPRING_RABBITMQ_HOST: "rabbit"
+      SPRING_RABBITMQ_HOST: "rabbitmq"
     depends_on:
       eurekaserver:
         condition: service_healthy
-      rabbit:
+      rabbitmq:
         condition: service_healthy
 #      mongodb:
 #        condition: service_healthy
@@ -109,11 +109,11 @@ services:
       SPRING_APPLICATION_NAME: "stata"
       SPRING_CONFIG_IMPORT: configserver:http://configserver:8071/
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eurekaserver:8070/eureka/
-      SPRING_RABBITMQ_HOST: "rabbit"
+      SPRING_RABBITMQ_HOST: "rabbitmq"
     depends_on:
       eurekaserver:
         condition: service_healthy
-      rabbit:
+      rabbitmq:
         condition: service_healthy
 #      mongodb_stata:
 #        condition: service_healthy
