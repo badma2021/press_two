@@ -5,6 +5,8 @@ import com.presstwo.input.dto.InputDto;
 import com.presstwo.input.service.InputService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,6 +29,7 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 @RestController
 @RequestMapping("/api")
 public class InputController {
+
 
     @Autowired
     InputService inputService;

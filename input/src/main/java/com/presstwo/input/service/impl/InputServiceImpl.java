@@ -23,7 +23,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static java.util.Objects.isNull;
 
 /**
- * This file was created by aantonica on 20/05/2020
+ * This file was created by
  */
 @Service
 public class InputServiceImpl implements InputService {
@@ -123,5 +123,8 @@ public class InputServiceImpl implements InputService {
         log.info("Sending Communication request for the details: {}", input);
         var result = streamBridge.send("sendCommunication-out-0", input);
         log.info("Is the Communication request successfully triggered ? : {}", result);
+
+
+
     }
 }

@@ -19,5 +19,6 @@ public interface InputService {
 
     void updateInput(InputDto inputDto) throws RuntimeException;
 
+    List<InputDto> fetchInputsByCategory(String category);
 }
 

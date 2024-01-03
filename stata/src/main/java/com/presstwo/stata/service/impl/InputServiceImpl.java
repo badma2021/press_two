@@ -23,7 +23,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static java.util.Objects.isNull;
 
 /**
- * This file was created by aantonica on 20/05/2020
+ * This file was created by
  */
 @Service
 public class InputServiceImpl implements InputService {
@@ -113,6 +113,18 @@ public class InputServiceImpl implements InputService {
         }
 
         throw new NoSuchElementException("No input with id " + inputDto.getId() + " was found");
+    }
+
+    @Override
+    public List<InputDto> fetchInputsByCategory(String category) {
+        List<Input> inputList = inputDao.findByCategory(category);
+
+
+            return inputList.stream()
+                    .map(input -> modelMapper.map(input, InputDto.class))
+                    .collect(Collectors.toList());
+
+
     }
 
 }

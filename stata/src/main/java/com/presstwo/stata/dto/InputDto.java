@@ -5,7 +5,7 @@ import lombok.Data;
 import java.util.Date;
 
 /**
- * This file was created by aantonica on 20/05/2020
+ * This file was created by
  */
 @Data
 public class InputDto {
